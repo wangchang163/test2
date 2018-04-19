@@ -47,7 +47,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
-        debug{
+        debug {
             buildConfigField 'String', 'API_SERVER_URL', RELEASE_API_SERVER_URL
             buildConfigField 'String', 'API_SERVER_URL_MALL', RELEASE_API_SERVER_URL_MALL
             buildConfigField 'String', 'IM_SERVER_HOST', RELEASE_IM_SERVER_HOST
@@ -61,6 +61,30 @@ android {
     }
     dexOptions {
         javaMaxHeapSize "4g"
+    }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {//这里是all，下面是根据自己的情况来定制
+            def date = new Date()
+            def formattedDate = date.format('yyyyMMdd')
+            def fileName
+            if (variant.buildType.name == "release") {
+                // 输出apk名称为app_100_release.apk
+                fileName = "test_V${defaultConfig.versionName}.apk"
+            } else if (variant.buildType.name == "debug") {
+                // 输出apk名称为app_100_debug.apk
+                fileName = "test_debug_V${defaultConfig.versionName}_${formattedDate}.apk"
+            } else {
+                // 输出apk名称为app_v1.0.0_2017-12-11_101_beta.apk
+                fileName = "test_Beta_V${defaultConfig.versionName}.apk"
+            }
+            if ("true".equals(IS_JENKINS)) {
+                fileName = "Jenkens_" + fileName
+            }
+
+            //outputFileName = "HuaxiaSign_${defaultConfig.versionName}_${formattedDate}.apk"
+            //很多博客只是写了上面这句话，没有具体赋值，自己来选择赋值给outputFileName
+            outputFileName = fileName
+        }
     }
 }
 
