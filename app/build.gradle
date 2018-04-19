@@ -1,23 +1,66 @@
 apply plugin: 'com.android.application'
 
+def verCode = 14
+
 android {
     compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+    signingConfigs {
+        release {
+            keyAlias 'test'
+            keyPassword '111111'
+            storeFile file('test.jks')
+            storePassword '111111'
+        }
+
+        debug {
+            keyAlias 'test'
+            keyPassword '111111'
+            storeFile file('test.jks')
+            storePassword '111111'
+        }
+    }
     defaultConfig {
         applicationId "com.example.thinkpad.test_git"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode verCode
+        versionName APP_VERSION
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        resValue("string", 'app_version', APP_VERSION)
+        buildConfigField "boolean", "LEO_DEBUG", "true"
+        buildConfigField 'String', 'API_SERVER_URL', RELEASE_API_SERVER_URL
+        buildConfigField 'String', 'API_SERVER_URL_MALL', RELEASE_API_SERVER_URL_MALL
+        signingConfig signingConfigs.release
     }
+
     buildTypes {
         release {
-            minifyEnabled false
+            buildConfigField 'String', 'API_SERVER_URL', RELEASE_API_SERVER_URL
+            buildConfigField 'String', 'API_SERVER_URL_MALL', RELEASE_API_SERVER_URL_MALL
+            buildConfigField 'String', 'IM_SERVER_HOST', RELEASE_IM_SERVER_HOST
+            buildConfigField 'int', 'IM_SERVER_PORT', RELEASE_IM_SERVER_PORT
+            buildConfigField "boolean", "LEO_DEBUG", RELEASE_LEO_DEBUG
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug{
+            buildConfigField 'String', 'API_SERVER_URL', RELEASE_API_SERVER_URL
+            buildConfigField 'String', 'API_SERVER_URL_MALL', RELEASE_API_SERVER_URL_MALL
+            buildConfigField 'String', 'IM_SERVER_HOST', RELEASE_IM_SERVER_HOST
+            buildConfigField 'int', 'IM_SERVER_PORT', RELEASE_IM_SERVER_PORT
+            buildConfigField "boolean", "LEO_DEBUG", RELEASE_LEO_DEBUG
+            signingConfig signingConfigs.debug
         }
     }
     lintOptions {
         abortOnError false
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 }
 
