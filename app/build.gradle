@@ -1,7 +1,12 @@
 apply plugin: 'com.android.application'
 
-def verCode = 1
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmm')
+    return formattedDate
+}
 
+def verCode = 14
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
@@ -62,28 +67,26 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
-    android.applicationVariants.all { variant ->
-        variant.outputs.all {//这里是all，下面是根据自己的情况来定制
-            def date = new Date()
-            def formattedDate = date.format('yyyyMMdd')
-            def fileName
-            if (variant.buildType.name == "release") {
-                // 输出apk名称为app_100_release.apk
-                fileName = "test_V${defaultConfig.versionName}.apk"
-            } else if (variant.buildType.name == "debug") {
-                // 输出apk名称为app_100_debug.apk
-                fileName = "test_debug_V${defaultConfig.versionName}_${formattedDate}.apk"
-            } else {
-                // 输出apk名称为app_v1.0.0_2017-12-11_101_beta.apk
-                fileName = "test_Beta_V${defaultConfig.versionName}.apk"
-            }
-            if ("true".equals(IS_JENKINS)) {
-                fileName = "Jenkens_" + fileName
-            }
-
-            //outputFileName = "HuaxiaSign_${defaultConfig.versionName}_${formattedDate}.apk"
-            //很多博客只是写了上面这句话，没有具体赋值，自己来选择赋值给outputFileName
-            outputFileName = fileName
+    allprojects {
+        repositories {
+            mavenCentral()
+            maven { url "https://jitpack.io" }
+        }
+    }
+    applicationVariants.all { variant ->
+        //这个修改输出的APK路径
+        if ("true".equals(IS_JENKINS)) {//防止AS无法安装debug包(apk)
+            variant.getPackageApplication().outputDirectory = new File(project.rootDir.absolutePath + "/apk")
+        }
+        variant.getPackageApplication().outputScope.apkDatas.forEach { apkData ->
+            //这个修改输出APK的文件名
+            apkData.outputFileName = "AppName-" +
+                    variant.versionName + "_" +
+                    getDate() + "_" +
+                    variant.flavorName + "_" +
+                    variant.buildType.name + "_" +
+                    variant.signingConfig.name +
+                    ".apk"
         }
     }
 }
@@ -92,7 +95,4 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
