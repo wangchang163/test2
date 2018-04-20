@@ -12,15 +12,14 @@ android {
     buildToolsVersion '26.0.2'
     signingConfigs {
         release {
-            storeFile file('test.jks')
+            storeFile file('./test.jks')
             storePassword '111111'
             keyAlias 'test'
             keyPassword '111111'
 
         }
-
         debug {
-            storeFile file('test.jks')
+            storeFile file('./test.jks')
             storePassword '111111'
             keyAlias 'test'
             keyPassword '111111'
@@ -86,7 +85,6 @@ android {
                     variant.versionName + "_" +
                     getDate() + "_" +
                     variant.flavorName + "_" +
-                    variant.buildType.name + "_" +
                     variant.signingConfig.name +
                     ".apk"
         }
