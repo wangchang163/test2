@@ -84,7 +84,6 @@ android {
             apkData.outputFileName = "AppName-" +
                     variant.versionName + "_" +
                     getDate() + "_" +
-                    variant.flavorName + "_" +
                     variant.signingConfig.name +
                     ".apk"
         }
