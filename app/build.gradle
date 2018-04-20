@@ -12,17 +12,19 @@ android {
     buildToolsVersion '26.0.2'
     signingConfigs {
         release {
-            keyAlias 'test'
-            keyPassword '111111'
             storeFile file('test.jks')
             storePassword '111111'
+            keyAlias 'test'
+            keyPassword '111111'
+
         }
 
         debug {
-            keyAlias 'test'
-            keyPassword '111111'
             storeFile file('test.jks')
             storePassword '111111'
+            keyAlias 'test'
+            keyPassword '111111'
+
         }
     }
     defaultConfig {
