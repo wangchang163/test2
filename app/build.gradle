@@ -74,18 +74,17 @@ android {
             maven { url "https://jitpack.io" }
         }
     }
-    applicationVariants.all { variant ->
-        //这个修改输出的APK路径
-        if ("true".equals(IS_JENKINS)) {//防止AS无法安装debug包(apk)
-            variant.getPackageApplication().outputDirectory = new File(project.rootDir.absolutePath + "/apk")
-        }
-        variant.getPackageApplication().outputScope.apkDatas.forEach { apkData ->
-            //这个修改输出APK的文件名
-            apkData.outputFileName = "AppName-" +
-                    variant.versionName + "_" +
-                    getDate() + "_" +
-                    variant.signingConfig.name +
-                    ".apk"
+    afterEvaluate {
+        android.applicationVariants.all { variant ->
+            variant.assemble.doLast {
+                if (variant.buildType.name.contains('release')) {
+                    def apkPath = variant.outputs.first().outputFile as File
+                    exec {
+                        ignoreExitValue true
+                        commandLine "sh", "../../jiagu/jiagu_360.sh", apkPath, apkPath.getParent()
+                    }
+                }
+            }
         }
     }
 }
