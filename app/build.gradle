@@ -81,7 +81,7 @@ android {
         }
         variant.getPackageApplication().outputScope.apkDatas.forEach { apkData ->
             //这个修改输出APK的文件名
-            apkData.outputFileName = "AppName-" +
+            apkData.outputFileName = "test-" +
                     variant.versionName + "_" +
                     getDate() + "_" +
                     variant.signingConfig.name +
